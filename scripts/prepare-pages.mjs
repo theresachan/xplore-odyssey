@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const out = join(process.cwd(), ".output", "public");
@@ -11,4 +11,12 @@ if (!existsSync(index)) {
 
 copyFileSync(index, join(out, "404.html"));
 writeFileSync(join(out, ".nojekyll"), "");
+
+// A prerender artifact named ".html" makes GitHub Pages serve / as
+// application/octet-stream (browser downloads instead of rendering).
+for (const junk of [".html", "_headers"]) {
+  const path = join(out, junk);
+  if (existsSync(path)) unlinkSync(path);
+}
+
 console.log("Prepared GitHub Pages output in .output/public");

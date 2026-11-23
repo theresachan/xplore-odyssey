@@ -311,6 +311,8 @@ function Hero() {
         src={esplanadeImg}
         alt="Iloilo River Esplanade at sunset, Uswag Iloilo"
         className="absolute inset-0 h-full w-full object-cover object-[center_55%] scale-105"
+        fetchPriority="high"
+        decoding="async"
       />
       <div
         className="absolute inset-0 z-[2]"
@@ -368,6 +370,8 @@ function Introduce() {
               src={miagaoImg}
               alt="Miag-ao Church, Iloilo"
               className="aspect-[5/4] md:aspect-[16/11] w-full object-cover object-[center_40%]"
+              loading="lazy"
+              decoding="async"
             />
           </Reveal>
           <Reveal className="col-span-5" delay={120}>
@@ -375,6 +379,8 @@ function Introduce() {
               src={gigantesImg}
               alt="Gigantes Islands coastline"
               className="aspect-[4/5] md:aspect-auto md:h-full w-full object-cover object-[70%_50%]"
+              loading="lazy"
+              decoding="async"
             />
           </Reveal>
           <Reveal className="col-span-5 md:col-span-4" delay={80}>
@@ -382,6 +388,8 @@ function Introduce() {
               src={jaroImg}
               alt="Jaro Cathedral, Iloilo City"
               className="aspect-[5/3] w-full object-cover object-[center_35%]"
+              loading="lazy"
+              decoding="async"
             />
           </Reveal>
           <Reveal className="col-span-7 md:col-span-8" delay={160}>
@@ -426,6 +434,8 @@ function TheVan() {
                 src={driverImg}
                 alt="Licensed driver at the wheel at dusk"
                 className="w-full aspect-[16/10] object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                loading="lazy"
+                decoding="async"
               />
               <figcaption className="absolute inset-x-0 bottom-0 p-5 md:p-6 bg-gradient-to-t from-ink/80 to-transparent">
                 <p className="text-[12px] uppercase tracking-[0.2em] text-mist/70 font-semibold">Your driver</p>
@@ -441,6 +451,8 @@ function TheVan() {
                 src={cabinImg}
                 alt="Reclining passenger seats inside the Hiace Grandia"
                 className="w-full h-full min-h-[240px] aspect-[4/5] md:aspect-auto object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                loading="lazy"
+                decoding="async"
               />
               <figcaption className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-ink/80 to-transparent">
                 <p className="text-[12px] uppercase tracking-[0.2em] text-mist/70 font-semibold">The cabin</p>
@@ -514,6 +526,8 @@ function Offer() {
                     alt=""
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                     style={{ objectPosition: s.position }}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 <div className="pt-5">
@@ -737,6 +751,8 @@ function Explain() {
               src={driverImg}
               alt="Professional driver focused on the road"
               className="w-full aspect-[4/5] md:aspect-[5/6] object-cover object-[center_35%]"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute -left-3 -bottom-3 md:-left-5 md:-bottom-5 w-[40%] h-[30%] bg-canopy -z-10" aria-hidden />
           </div>
@@ -850,6 +866,8 @@ function Invite() {
         src={sicogonImg}
         alt=""
         className="absolute inset-0 h-full w-full object-cover object-[center_45%]"
+        loading="lazy"
+        decoding="async"
       />
       <div
         className="absolute inset-0 z-[2]"

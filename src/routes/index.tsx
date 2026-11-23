@@ -1,20 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
-import cabinImg from "@/assets/comfort/cabin.jpg";
-import driverImg from "@/assets/comfort/driver.jpg";
-import miagaoImg from "@/assets/attractions/miagao.jpg";
-import gigantesImg from "@/assets/attractions/gigantes.jpg";
-import jaroImg from "@/assets/attractions/jaro.jpg";
-import sanJoaquinImg from "@/assets/attractions/sanjoaquin.jpg";
-import moloImg from "@/assets/attractions/molo.jpg";
-import esplanadeImg from "@/assets/attractions/esplanade.jpg";
-import bucariImg from "@/assets/attractions/bucari.jpg";
-import sicogonImg from "@/assets/attractions/sicogon.jpg";
-import batchoyImg from "@/assets/cuisine/batchoy.jpg";
-import pancitMoloImg from "@/assets/cuisine/pancit-molo.jpg";
-import kblImg from "@/assets/cuisine/kbl.jpg";
-import biscochoImg from "@/assets/cuisine/biscocho.jpg";
-import seafoodImg from "@/assets/cuisine/seafood.jpg";
+import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from "react";
+import cabinImg from "@/assets/comfort/cabin.webp";
+import driverImg from "@/assets/comfort/driver.webp";
+import miagaoImg from "@/assets/attractions/miagao.webp";
+import gigantesImg from "@/assets/attractions/gigantes.webp";
+import jaroImg from "@/assets/attractions/jaro.webp";
+import sanJoaquinImg from "@/assets/attractions/sanjoaquin.webp";
+import moloImg from "@/assets/attractions/molo.webp";
+import esplanadeImg from "@/assets/attractions/esplanade.webp";
+import bucariImg from "@/assets/attractions/bucari.webp";
+import sicogonImg from "@/assets/attractions/sicogon.webp";
+import batchoyImg from "@/assets/cuisine/batchoy.webp";
+import pancitMoloImg from "@/assets/cuisine/pancit-molo.webp";
+import kblImg from "@/assets/cuisine/kbl.webp";
+import biscochoImg from "@/assets/cuisine/biscocho.webp";
+import seafoodImg from "@/assets/cuisine/seafood.webp";
 import { ILOILO_PATHS, ILOILO_TOWNS } from "@/data/iloilo-map";
 import { BRAND, LOCATION, LOCATION_LINE, TAGLINE, WHATSAPP } from "@/lib/brand";
 import {
@@ -24,8 +24,45 @@ import {
   SiteFooter,
   SiteHeader,
 } from "@/components/site-chrome";
-import { Van3D } from "@/components/van-3d";
 import { Reveal } from "@/components/reveal";
+
+const Van3D = lazy(() =>
+  import("@/components/van-3d").then((m) => ({ default: m.Van3D })),
+);
+
+/** Defer Three.js until the van section is near the viewport. */
+function LazyVan3D({ className = "" }: { className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [load, setLoad] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setLoad(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "240px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className={className}>
+      {load ? (
+        <Suspense fallback={<div className="h-full w-full bg-hush animate-pulse" aria-hidden />}>
+          <Van3D className="h-full w-full" />
+        </Suspense>
+      ) : (
+        <div className="h-full w-full bg-hush" aria-hidden />
+      )}
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -424,7 +461,7 @@ function TheVan() {
         </Reveal>
 
         <Reveal delay={80}>
-          <Van3D className="aspect-[16/11] md:aspect-[21/10] w-full border border-ink/10" />
+          <LazyVan3D className="aspect-[16/11] md:aspect-[21/10] w-full border border-ink/10" />
         </Reveal>
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5">

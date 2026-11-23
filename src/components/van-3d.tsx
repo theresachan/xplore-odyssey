@@ -299,7 +299,7 @@ export function Van3D({ className = "" }: { className?: string }) {
     <div className={`relative overflow-hidden bg-mist ${className}`}>
       <Canvas
         shadows
-        dpr={[1, 1.75]}
+        dpr={[1, 1.5]}
         camera={{ position: [5.4, 2.1, 4.6], fov: 28, near: 0.1, far: 60 }}
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
         onCreated={({ gl }) => {

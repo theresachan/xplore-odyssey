@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import vanExterior from "@/assets/van-exterior.jpg";
-import vanSide from "@/assets/van-side.jpg";
+import vanExterior from "@/assets/van-exterior.webp";
+import vanSide from "@/assets/van-side.webp";
 import { BRAND, EMAIL, LOCATION, TAGLINE, WHATSAPP, colors, fonts, voice } from "@/lib/brand";
 import { ButtonPrimary, ButtonSecondary, SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { XoMark } from "@/components/xo-logo";

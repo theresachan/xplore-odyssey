@@ -10,31 +10,25 @@ type RevealProps = {
 };
 
 /**
- * Scroll-triggered fade/rise.
- * Content stays visible for SSR and anything already on screen.
- * Only blocks fully below the fold start hidden, then rise in on scroll.
+ * Subtle scroll rise. Never hides content (opacity stays 1) so images
+ * always paint — lazy-load + opacity:0 was blanking whole sections.
  */
 export function Reveal({ children, className = "", delay = 0, once = true }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(true);
-  const [armed, setArmed] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [reduce, setReduce] = useState(false);
+
+  useEffect(() => {
+    setReduce(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reduce) {
       setVisible(true);
-      setArmed(false);
       return;
     }
-
-    const vh = window.innerHeight || document.documentElement.clientHeight || 800;
-    const rect = el.getBoundingClientRect();
-    // Only hide when the whole block is clearly below the fold
-    const fullyBelow = rect.top >= vh - 8;
-    setVisible(!fullyBelow);
-    setArmed(true);
 
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -45,23 +39,25 @@ export function Reveal({ children, className = "", delay = 0, once = true }: Rev
           setVisible(false);
         }
       },
-      { threshold: 0.01, rootMargin: "100px 0px" },
+      { threshold: 0.08, rootMargin: "0px 0px -4% 0px" },
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [once]);
+  }, [once, reduce]);
 
   const style: CSSProperties =
-    armed && visible
+    !reduce && visible
       ? {
           transitionDelay: `${delay}ms`,
         }
       : undefined;
 
-  const motionClass = !armed ? "" : visible ? "reveal-in" : "reveal-out";
-
   return (
-    <div ref={ref} style={style} className={`reveal-base ${motionClass} ${className}`.trim()}>
+    <div
+      ref={ref}
+      style={style}
+      className={`reveal-base ${reduce || visible ? "reveal-in" : "reveal-pending"} ${className}`.trim()}
+    >
       {children}
     </div>
   );

@@ -98,18 +98,15 @@
   .fade-in-delay {
     animation: soft-fade 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both;
   }
+  /* Transform-only — never opacity:0 (that hid images + blocked lazy-load). */
   .reveal-base {
-    transition:
-      opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
   }
-  .reveal-out {
-    opacity: 0;
-    transform: translateY(22px);
+  .reveal-pending {
+    transform: translateY(18px);
   }
   .reveal-in {
-    opacity: 1;
     transform: translateY(0);
   }
 }
@@ -133,9 +130,8 @@
   .reveal-base {
     transition: none;
   }
-  .reveal-out,
+  .reveal-pending,
   .reveal-in {
-    opacity: 1;
     transform: none;
   }
 }

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from "react";
+import { lazy, Suspense, useState, type FormEvent } from "react";
 import cabinImg from "@/assets/comfort/cabin.webp";
 import driverImg from "@/assets/comfort/driver.webp";
 import miagaoImg from "@/assets/attractions/miagao.webp";
@@ -30,37 +30,42 @@ const Van3D = lazy(() =>
   import("@/components/van-3d").then((m) => ({ default: m.Van3D })),
 );
 
-/** Defer Three.js until the van section is near the viewport. */
+/** 3D van is ~1MB of Three.js — only load after an explicit click. */
 function LazyVan3D({ className = "" }: { className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
   const [load, setLoad] = useState(false);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setLoad(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: "240px 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  return (
-    <div ref={ref} className={className}>
-      {load ? (
+  if (load) {
+    return (
+      <div className={className}>
         <Suspense fallback={<div className="h-full w-full bg-hush animate-pulse" aria-hidden />}>
           <Van3D className="h-full w-full" />
         </Suspense>
-      ) : (
-        <div className="h-full w-full bg-hush" aria-hidden />
-      )}
-    </div>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => setLoad(true)}
+      className={`relative group block w-full overflow-hidden text-left cursor-pointer ${className}`}
+      aria-label="Load 3D cabin view"
+    >
+      <img
+        src={cabinImg}
+        alt="Hiace cabin interior"
+        className="h-full w-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+      <span className="absolute inset-0 bg-ink/35 transition-colors group-hover:bg-ink/25" />
+      <span className="absolute inset-x-0 bottom-0 p-5 md:p-6 flex items-end justify-between gap-3">
+        <span className="font-display text-[1.15rem] md:text-[1.35rem] font-bold text-mist">
+          Tap to look inside
+        </span>
+        <span className="text-[12px] uppercase tracking-[0.18em] font-semibold text-mist/80">3D</span>
+      </span>
+    </button>
   );
 }
 

@@ -11,8 +11,8 @@ type RevealProps = {
 
 /**
  * Scroll-triggered fade/rise.
- * SSR + first paint stay visible so images aren't blank before JS/IO.
- * After mount, off-screen blocks hide then animate in on scroll.
+ * Content stays visible for SSR and anything already on screen.
+ * Only blocks fully below the fold start hidden, then rise in on scroll.
  */
 export function Reveal({ children, className = "", delay = 0, once = true }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -29,10 +29,11 @@ export function Reveal({ children, className = "", delay = 0, once = true }: Rev
       return;
     }
 
+    const vh = window.innerHeight || document.documentElement.clientHeight || 800;
     const rect = el.getBoundingClientRect();
-    const vh = window.innerHeight || document.documentElement.clientHeight;
-    const onScreen = rect.top < vh - 24 && rect.bottom > 24;
-    setVisible(onScreen);
+    // Only hide when the whole block is clearly below the fold
+    const fullyBelow = rect.top >= vh - 8;
+    setVisible(!fullyBelow);
     setArmed(true);
 
     const io = new IntersectionObserver(
@@ -44,7 +45,7 @@ export function Reveal({ children, className = "", delay = 0, once = true }: Rev
           setVisible(false);
         }
       },
-      { threshold: 0.04, rootMargin: "0px 0px -8% 0px" },
+      { threshold: 0.01, rootMargin: "100px 0px" },
     );
     io.observe(el);
     return () => io.disconnect();
